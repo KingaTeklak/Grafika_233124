@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Żółw</title>
+</head>
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <button onclick="penUp()">Pen Up</button>
+    <button onclick="penDown()">Pen Down</button>
+    <input type="number" id="distance" placeholder="Distance">
+    <button onclick="moveForward()">Move Forward</button>
+    <input type="number" id="angle" placeholder="Angle">
+    <button onclick="turnLeft()">Turn Left</button>
+    <button onclick="turnRight()">Turn Right</button>
+    <input type="color" id="lineColor" value="#000000">
+    <button onclick="changeLineColor()">Change Line Color</button>
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        let turtleX = canvas.width / 2;
+        let turtleY = canvas.height / 2;
+        let turtleAngle = 0;
+        let penDownFlag = true;
+        let lineColor = "#000000";
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function penUp() {
+            penDownFlag = false;
+        }
+
+        function penDown() {
+            penDownFlag = true;
+        }
+
+        function moveForward() {
+            const distance = parseFloat(document.getElementById("distance").value);
+            const newX = turtleX + distance * Math.cos((turtleAngle - 90) * (Math.PI / 180));
+            const newY = turtleY + distance * Math.sin((turtleAngle - 90) * (Math.PI / 180));
+
+            if (penDownFlag) {
+                ctx.beginPath();
+                ctx.moveTo(turtleX, turtleY);
+                ctx.lineTo(newX, newY);
+                ctx.strokeStyle = lineColor;
+                ctx.stroke();
+            }
+
+            turtleX = newX;
+            turtleY = newY;
+        }
+
+        function turnLeft() {
+            const angle = parseFloat(document.getElementById("angle").value);
+            turtleAngle += angle;
+        }
+
+        function turnRight() {
+            const angle = parseFloat(document.getElementById("angle").value);
+            turtleAngle -= angle;
+        }
+
+        function changeLineColor() {
+            lineColor = document.getElementById("lineColor").value;
+        }
+
+        clearCanvas();
+    </script>
+</body>
+</html>

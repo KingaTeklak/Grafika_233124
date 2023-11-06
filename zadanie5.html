@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>2D żółw</title>
+    <style>
+        canvas {
+            border: 2px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const player = {
+            x: 10,
+            y: 10,
+            speed: 5,
+            rad: 5,
+        };
+
+        const target = {
+            x: canvas.width - 40 ,
+            y: canvas.height -40,
+            size: 20,
+        };
+
+        const obstacles = [];
+
+        
+        function createObstacles() {
+            for (let i = 0; i < 4; i++) {
+                const obstacle = {
+                    x:  canvas.width/40 + i*canvas.width/5 + Math.random() * (canvas.height/50),
+                    y: Math.random() * (canvas.height/20) + (4-i) *canvas.width/5 + canvas.width/40 ,
+                    width: 30 + Math.random() * 30,
+                    height: 30 + Math.random() * 30,
+                };
+                obstacles.push(obstacle);
+            }
+        }
+
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+           
+            ctx.strokeStyle = 'black';
+            for (const obstacle of obstacles) {
+                ctx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            }
+
+            
+            ctx.strokeStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.rad, 0, Math.PI * 2);
+            ctx.stroke();
+
+            
+            ctx.strokeStyle = 'black';
+            ctx.strokeRect(target.x, target.y, target.size, target.size);
+        }
+
+        
+        function update() {
+            
+            if (keys[37] && player.x > 0) {
+                player.x -= player.speed;
+            }
+            if (keys[38] && player.y > 0) {
+                player.y -= player.speed;
+            }
+            if (keys[39] && player.x < canvas.width - player.rad) {
+                player.x += player.speed;
+            }
+            if (keys[40] && player.y < canvas.height - player.rad) {
+                player.y += player.speed;
+            }
+
+            // Sprawdzenie kolizji z przeszkodami
+            for (const obstacle of obstacles) {
+                if (
+                    player.x + player.rad > obstacle.x &&
+                    player.x- player.rad< obstacle.x + obstacle.width &&
+                    player.y + player.rad > obstacle.y &&
+                    player.y - player.rad< obstacle.y + obstacle.height
+                ) {
+                    alert('Przegrałeś!');
+                    player.x = 10;
+                    player.y = 10;
+                    location.reload(); 
+                }
+            }
+
+            // Sprawdzenie, czy gracz osiągnął cel
+            if (
+                player.x - player.rad < target.x + target.size &&
+                player.x + player.rad> target.x  &&
+                player.y - player.rad < target.y + target.size &&
+                player.y + player.rad > target.y 
+            ) {
+                alert('Gratulacje! Osiągnąłeś cel!');
+                player.x = 10;
+                player.y = 10;
+                location.reload(); 
+            }
+
+            draw();
+            requestAnimationFrame(update);
+        }
+
+      
+        const keys = {};
+
+        document.addEventListener('keydown', (event) => {
+            keys[event.keyCode] = true;
+        });
+
+
+        document.addEventListener('keyup', (event) => {
+            delete keys[event.keyCode];
+        });
+
+        createObstacles();
+        update();
+    </script>
+</body>
+</html>

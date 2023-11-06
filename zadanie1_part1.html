@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>żółw</title>
+</head>
+<body>
+    <canvas id="turtleCanvas" width="800" height="800" style="border:1px solid pink;"></canvas>
+    <script>
+        var canvas = document.getElementById("turtleCanvas");
+        var ctx = canvas.getContext("2d");
+
+        var turtle = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            angle: 0,
+            penDown: true,
+            color: "black", 
+            step: 10
+        };
+
+        function penUp() {
+            turtle.penDown = false;
+        }
+
+        function penDown() {
+            turtle.penDown = true;
+        }
+
+        function setColor(color) {
+            turtle.color = color;
+        }
+
+        function setStep(step) {
+            turtle.step = step;
+        }
+
+        function forward(distance) {
+            var newX = turtle.x + distance * Math.cos(turtle.angle * Math.PI / 180);
+            var newY = turtle.y + distance * Math.sin(turtle.angle * Math.PI / 180);
+
+            if (turtle.penDown) {
+                ctx.strokeStyle = turtle.color;
+                ctx.beginPath();
+                ctx.moveTo(turtle.x, turtle.y);
+                ctx.lineTo(newX, newY);
+                ctx.stroke();
+                
+                
+            }
+
+            turtle.x = newX;
+            turtle.y = newY;
+        }
+
+
+
+        function turn(degrees) {
+            turtle.angle += degrees;
+        }
+
+        function drawPolygon(sides, length) {
+            var angle = 360 / sides;
+            
+                      
+            for (var i = 0; i < sides; i++) {
+                setColor(getRandomColor());
+                forward(length);
+                turn(angle);
+            }
+
+           
+            penUp();
+            forward(-length); 
+            turn(180); 
+            forward(turtle.step); 
+        }
+
+
+        function getRandomColor() {
+            var letters = "0123456789ABCDEF";
+            var color = "#";
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        
+        penDown();
+        drawPolygon(4, 100); 
+        penUp();
+        setStep(100);
+        forward(turtle.step);
+        
+        penDown();
+        drawPolygon(6, 80); 
+        penUp();
+        setStep(300);
+        forward(turtle.step);
+        
+        penDown();
+        drawPolygon(8, 40); 
+       
+
+    </script>
+</body>
+</html>

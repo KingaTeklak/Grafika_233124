@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+    <meta charset="utf-8" />
+    <title>Trójkąt Sierpińskiego i płatek Kocha</title>
+
+    <style>
+      canvas {
+        border: 1px solid #000;
+      }
+    </style>
+
+  </head>
+  <body>
+    <label for="level">Stopień:</label>
+    <input
+      type="range"
+      id="level"
+      name="level"
+      min="0"
+      max="5"
+      value="0"
+    />
+    <canvas id="canvas" width="600" height="600"></canvas>
+
+    <script>
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const levelInput = document.getElementById('level');
+
+      levelInput.addEventListener('input', draw);
+
+      function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    
+    
+      function drawSierpinskiTriangle(x, y, size, level) {
+        if (level === 0) {
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + size, y);
+          ctx.lineTo(x + size / 2, y + (size * Math.sqrt(3)) / 2);
+          ctx.closePath();
+          ctx.stroke();
+        } else {
+          const newSize = size / 2;
+          drawSierpinskiTriangle(x, y, newSize, level - 1);
+          drawSierpinskiTriangle(x + newSize, y, newSize, level - 1);
+          drawSierpinskiTriangle(x + newSize / 2, y + (newSize * Math.sqrt(3)) / 2, newSize, level - 1);
+        }
+      }
+
+      function drawLine(x1, y1, x2, y2) {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      }
+      // Korzystam z gotowego algorytmu dla płatka Kocha:
+      function Koch(n, x, y, d, alfa) {
+        var dx = d * Math.cos(alfa);
+        var dy = d * Math.sin(alfa);
+        if (n == 0) {
+          drawLine(x, y, x + dx, y - dy);
+        } else {
+          Koch(n - 1, x, y, d / 3, alfa);
+          Koch(n - 1, x + dx / 3, y - dy / 3, d / 3, alfa + Math.PI / 3);
+          Koch(
+            n - 1,
+            x + dx / 2 - dy * Math.sqrt(3) / 6,
+            y - dy / 2 - dx * Math.sqrt(3) / 6,
+            d / 3,
+            alfa - Math.PI / 3
+          );
+          Koch(n - 1, x + (2 * dx) / 3, y - (2 * dy) / 3, d / 3, alfa);
+        }
+      }
+
+      function PlatekKocha(n, xs, ys, d) {
+        Koch(n, xs - d / 2, ys + (d * Math.sqrt(3)) / 6, d, Math.PI / 3);
+        Koch(n, xs, ys - (d * Math.sqrt(3)) / 3, d, -Math.PI / 3);
+        Koch(n, xs + d / 2, ys + (d * Math.sqrt(3)) / 6, d, Math.PI);
+      }
+
+      function draw() {
+        clearCanvas();
+        const level = parseInt(levelInput.value);
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        ctx.strokeStyle = '#000';
+
+        ctx.fillStyle = '#ff0000';
+        drawSierpinskiTriangle(centerX - 150, centerY , 300, level);
+        PlatekKocha(level, centerX, centerY-150, 250);
+      }
+
+      draw();
+      
+ 
+    </script>
+  </body>
+</html>
