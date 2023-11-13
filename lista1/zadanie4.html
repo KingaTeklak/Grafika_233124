@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+    <meta charset="utf-8" />
+    <title>Trójkąt Sierpińskiego i płatek Kocha</title>
+
+    <style>
+      canvas {
+        border: 1px solid #000;
+      }
+    </style>
+
+  </head>
+  <body>
+    <label for="level">Stopień:</label>
+    <input
+      type="range"
+      id="level"
+      name="level"
+      min="1"
+      max="8"
+      value="1"
+    />
+    <canvas id="canvas" width="600" height="700"></canvas>
+
+    <script>
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      let turtleX = canvas.width / 2 - 150;
+      let turtleY = canvas.height / 2-75;
+      let turtleAngle = 0;
+      let penDownFlag = true;
+      let lineColor = "#000000";
+      const levelInput = document.getElementById('level');
+
+      levelInput.addEventListener('input', draw);
+
+      function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      }
+
+      //funkcje pomocnicze:
+      function moveForward(distance) {
+            
+            const newX = turtleX + distance * Math.cos((turtleAngle ) * (Math.PI / 180));
+            const newY = turtleY + distance * Math.sin((turtleAngle ) * (Math.PI / 180));
+
+            ctx.beginPath();
+            ctx.moveTo(turtleX, turtleY);
+            ctx.lineTo(newX, newY);
+            ctx.strokeStyle = lineColor;
+            ctx.stroke();
+            
+
+            turtleX = newX;
+            turtleY = newY;
+        }
+
+        function turnLeft(angle) {
+         
+            turtleAngle += angle;
+        }
+
+        function turnRight(angle) {
+            turtleAngle -= angle;
+        }
+   
+    //sierpiński:
+      function drawSierpinskiTriangle(x, y, size, level) {
+        if (level === 1) {
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + size, y);
+          ctx.lineTo(x + size / 2, y + (size * Math.sqrt(3)) / 2);
+          ctx.closePath();
+          ctx.stroke();
+        } else {
+          const newSize = size / 2;
+          drawSierpinskiTriangle(x, y, newSize, level - 1);
+          drawSierpinskiTriangle(x + newSize, y, newSize, level - 1);
+          drawSierpinskiTriangle(x + newSize / 2, y + (newSize * Math.sqrt(3)) / 2, newSize, level - 1);
+        }
+      }
+      
+      function koch_bok(distance, n){
+            if(n===1){
+                moveForward(distance);
+            }else{
+                koch_bok(distance/3, n-1)
+                turnLeft(60)
+                koch_bok(distance/3, n-1)
+                turnRight(120)
+                koch_bok(distance/3, n-1)
+                turnLeft(60)
+                koch_bok(distance/3, n-1)
+            }
+            
+        }
+        function platek(distance, n){
+            for(let i = 0; i<3; i++){
+                koch_bok(distance,n)
+                turnRight(120)
+            }
+
+        }
+
+      function draw() {
+        clearCanvas();
+        const level = parseInt(levelInput.value);
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        ctx.strokeStyle = '#000';
+
+        ctx.fillStyle = '#ff0000';
+        drawSierpinskiTriangle(centerX - 150, centerY+75 , 300, level);
+        platek(300,level);
+      }
+
+      draw();
+      
+ 
+    </script>
+  </body>
+</html>

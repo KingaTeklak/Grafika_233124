@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotacja Wektora</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="700" height="700"></canvas>
+
+<script>
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+
+
+    var size = 300;
+    var height = 600;
+    var width = 600;
+
+    // Funkcja do rysowania wektora
+    function drawVector(x, y, color, label, size) {
+        ctx.beginPath();
+        ctx.moveTo(width / 2, height - 100);
+        ctx.lineTo(width / 2 + x * size, height - 100 - y * size);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Dodanie etykiety
+        ctx.fillStyle = color;
+        ctx.font = "12px Arial";
+        ctx.fillText(label, width / 2 + x * size, height - 100 - y * size);
+    }
+
+    // Funkcja do rysowania przesuniętego wektora
+    function drawOffsetVector(x, y, offset, color,  size) {
+        ctx.beginPath();
+        ctx.moveTo(width / 2 + offset[0] * size, height - 100 - offset[1] * size);
+        ctx.lineTo(width / 2 + x * size + offset[0] * size, height - 100 - y * size - offset[1] * size);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
+    function drawOffsetVectorParallelToX(x, y, offset, color, size) {
+        ctx.beginPath();
+        ctx.moveTo(width / 2 + x * size + offset[0] * size, height - 100 - y * size - offset[1] * size);
+        ctx.lineTo(width / 2 + x * size + offset[0] * size + rotatedVectorX[0] * size, height - 100 - y * size - offset[1] * size + rotatedVectorX[1] * size);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+}
+
+    // Funkcja do obracania wektora o 120 stopni
+    function rotateVector(x, y, angle) {
+        var newX = x * Math.cos(angle) - y * Math.sin(angle);
+        var newY = x * Math.sin(angle) + y * Math.cos(angle);
+        return [newX, newY];
+    }
+
+    // Wektor przed obrotem
+    var VectorY = [0, 1];
+    drawVector(VectorY[0], VectorY[1], "blue", "y", size);
+    
+    // Obrót o 120 stopni
+    var rotatedVectorZ = rotateVector(VectorY[0], VectorY[1], (2 * Math.PI) / 3);
+    drawVector(rotatedVectorZ[0], rotatedVectorZ[1], "red", "z", size);
+
+    // Obrót o -120 stopni 
+    var rotatedVectorX = rotateVector(VectorY[0], VectorY[1], -(2 * Math.PI) / 3);
+    drawVector(rotatedVectorX[0], rotatedVectorX[1], "green", "x", size);
+
+
+    var offsetVector = [rotatedVectorZ[0] / 4, rotatedVectorZ[1] / 4]; // Przesunięcie wektora równoległego do niebieskiego
+    drawOffsetVector(VectorY[0], VectorY[1], [rotatedVectorZ[0], rotatedVectorZ[1]], "black", size / 2);
+    drawOffsetVector(VectorY[0], VectorY[1], [rotatedVectorX[0], rotatedVectorX[1]], "black", size / 2);
+
+    drawVector(VectorY[0], VectorY[1], "grey", "", size/2);
+    drawVector(VectorY[0], VectorY[1], "black", "", -size/2);
+    drawVector(rotatedVectorX[0], rotatedVectorX[1], "grey", "", size/2);
+    drawVector(rotatedVectorZ[0], rotatedVectorZ[1], "grey", "", size/2);
+
+    drawOffsetVector(rotatedVectorZ[0], rotatedVectorZ[1], [rotatedVectorX[0], rotatedVectorX[1]], "black", size / 2);
+    drawOffsetVector(rotatedVectorX[0], rotatedVectorX[1], [rotatedVectorZ[0], rotatedVectorZ[1]], "black", size / 2);
+    drawOffsetVector(rotatedVectorX[0], rotatedVectorX[1], [rotatedVectorZ[0], -rotatedVectorZ[1]], "black", size/2);
+    drawOffsetVector(rotatedVectorZ[0], rotatedVectorZ[1], [rotatedVectorX[0], -rotatedVectorX[1]], "black",  size / 2);
+
+    drawOffsetVector(rotatedVectorX[0], rotatedVectorX[1], [VectorY[0], VectorY[1]], "black",  size / 2);
+    drawOffsetVector(rotatedVectorX[0], rotatedVectorX[1], [VectorY[0], VectorY[1]], "black",  size / 2);
+    // Przesunięcie wektora równoległego do zielonego
+    var offsetParallelToX = [rotatedVectorZ[0] , rotatedVectorZ[1] ];
+    drawOffsetVectorParallelToX(VectorY[0], VectorY[1], offsetParallelToX, "black", size / 2);
+
+    
+
+
+
+</script>
+
+</body>
+</html>
