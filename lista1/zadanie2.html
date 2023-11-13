@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wielokąt foremny</title>
+    <style>
+        #canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        .button-container {
+            text-align: center;
+        }
+        button {
+            margin: 5px;
+        }
+        input {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <button onclick="penUp()">Pen Up</button>
+    <button onclick="penDown()">Pen Down</button>
+    <input type="number" id="sideLength" placeholder="Side Length">
+    <button onclick="drawPolygon()">Draw Polygon</button>
+    <input type="number" id="sides" placeholder="Number of Sides">
+    <input type="number" id="angle" placeholder="Angle">
+    <button onclick="turnLeft()">Turn Left</button>
+    <button onclick="moveForward()">Move Forward</button>
+    <input type="color" id="lineColor" value="#000000">
+    <button onclick="changeLineColor()">Change Line Color</button>
+    
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        let turtleX = canvas.width / 2;
+        let turtleY = canvas.height / 2;
+        let turtleAngle = 0;
+        let penDownFlag = true;
+        let lineColor = "#000000";
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function penUp() {
+            penDownFlag = false;
+        }
+
+        function penDown() {
+            penDownFlag = true;
+        }
+        // draw regular polygon - angel value depends on num of sides
+        function drawPolygon() {
+            const sideLength = parseFloat(document.getElementById("sideLength").value);
+            const sides = parseInt(document.getElementById("sides").value);
+
+            if (sides < 3) {
+                alert("Number of sides must be at least 3.");
+                return;
+            }
+
+            const angle = (2 * Math.PI) / sides;
+            const centerX = turtleX;
+            const centerY = turtleY;
+
+            if (penDownFlag) {
+                ctx.beginPath();
+            }
+
+            for (let i = 0; i < sides; i++) {
+                const x = centerX + sideLength * Math.cos(i * angle + turtleAngle);
+                const y = centerY + sideLength * Math.sin(i * angle + turtleAngle);
+
+                if (penDownFlag) {
+                    ctx.lineTo(x, y);
+                }
+
+                turtleX = x;
+                turtleY = y;
+            }
+
+            if (penDownFlag) {
+                ctx.strokeStyle = lineColor;
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+
+        function turnLeft() {
+            const angle = parseFloat(document.getElementById("angle").value);
+            turtleAngle += angle;
+        }
+
+        function changeLineColor() {
+            lineColor = document.getElementById("lineColor").value;
+        }
+
+        function moveForward() {
+            const distance = parseFloat(document.getElementById("sideLength").value);
+            const newX = turtleX + distance * Math.cos((turtleAngle - 90) * (Math.PI / 180));
+            const newY = turtleY + distance * Math.sin((turtleAngle - 90) * (Math.PI / 180));
+
+            if (penDownFlag) {
+                ctx.beginPath();
+                ctx.moveTo(turtleX, turtleY);
+                ctx.lineTo(newX, newY);
+                ctx.strokeStyle = lineColor;
+                ctx.stroke();
+            }
+
+            turtleX = newX;
+            turtleY = newY;
+        }
+
+        clearCanvas();
+    </script>
+</body>
+</html>

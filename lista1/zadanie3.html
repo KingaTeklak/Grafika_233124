@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Graf Pełny i  Graf Dwudzielny</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .graph-container {
+            width: 30%;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="graph-container">
+            <h2>Graf Pełny</h2>
+            <canvas id="fullGraphCanvas" width="400" height="400"></canvas>
+            <input type="number" id="degree" placeholder="Stopień grafu">
+            <div class="button-container">
+                <button onclick="drawFullGraph()">Narysuj pełny graf G_n</button>
+            </div>
+        </div>
+
+        <div class="graph-container">
+            <h2>Dwudzielny Graf</h2>
+            <canvas id="bipartiteGraphCanvas" width="400" height="400"></canvas>
+            <input type="number" id="mA" placeholder="Liczba wierzchołków w zbiorze A" min="1" required>
+            <input type="number" id="nB" placeholder="Liczba wierzchołków w zbiorze B" min="1" required>
+            <div class="button-container">
+                <button type="button" onclick="drawBipartiteGraph()">Narysuj dwudzielny graf K_m,n</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fullGraphCanvas = document.getElementById("fullGraphCanvas");
+        const bipartiteGraphCanvas = document.getElementById("bipartiteGraphCanvas");
+        const fullGraphCtx = fullGraphCanvas.getContext("2d");
+        const bipartiteGraphCtx = bipartiteGraphCanvas.getContext("2d");
+
+        function drawFullGraph() {
+            const degree = parseInt(document.getElementById("degree").value);
+            const size = 50;
+            const centerX = fullGraphCanvas.width / 2;
+            const centerY = fullGraphCanvas.height / 2;
+            const angleStep = (2 * Math.PI) / degree;
+
+            clearCanvas(fullGraphCtx);
+
+            for (let i = 0; i < degree; i++) {
+                for (let j = i + 1; j < degree; j++) {
+                    const x1 = centerX + size * Math.cos(i * angleStep);
+                    const y1 = centerY + size * Math.sin(i * angleStep);
+                    const x2 = centerX + size * Math.cos(j * angleStep);
+                    const y2 = centerY + size * Math.sin(j * angleStep);
+
+                    fullGraphCtx.beginPath();
+                    fullGraphCtx.moveTo(x1, y1);
+                    fullGraphCtx.lineTo(x2, y2);
+                    fullGraphCtx.strokeStyle = "#000000";
+                    fullGraphCtx.stroke();
+                }
+            }
+        }
+
+        function drawBipartiteGraph() {
+            const mAInput = document.getElementById("mA");
+            const nBInput = document.getElementById("nB");
+
+            if (mAInput.checkValidity() && nBInput.checkValidity()) {
+                const mA = parseInt(mAInput.value);
+                const nB = parseInt(nBInput.value);
+                const c = 100;
+                const x1 = 50; // Współrzędna x dla zbioru A
+                const y = bipartiteGraphCanvas.height / 2; // Współrzędna y wspólna dla zbiorów A i B
+
+                clearCanvas(bipartiteGraphCtx);
+
+                
+                for (let i = 0; i < mA; i++) {
+                    const xA = x1;
+                    const yA = y - (mA - 1) * 20 / 2 + i * 20;
+                    drawCircle(bipartiteGraphCtx, xA, yA, 4);
+
+                    // Rysowanie krawędzi między wierzchołkiem w A i wszystkimi wierzchołkami w B
+                    for (let j = 0; j < nB; j++) {
+                        const xB = x1 + c;
+                        const yB = y - (nB - 1) * 20 / 2 + j * 20;
+                        drawLine(bipartiteGraphCtx, xA, yA, xB, yB);
+                        
+                    }
+                
+                }
+
+                // Rysowanie wierzchołków w zbiorze B w (x1 + c, y)
+                for (let i = 0; i < nB; i++) {
+                    const xB = x1 + c;
+                    const yB = y - (nB - 1) * 20 / 2 + i * 20;
+                    drawCircle(bipartiteGraphCtx, xB, yB, 4);
+                }
+            }
+        }
+
+        function drawCircle(ctx, x, y, radius) {
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+
+        function drawLine(ctx, x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+
+        function clearCanvas(ctx) {
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>żółw</title>
+</head>
+<body>
+    <canvas id="turtleCanvas" width="800" height="800" style="border:1px solid pink;"></canvas>
+    <script>
+        var canvas = document.getElementById("turtleCanvas");
+        var ctx = canvas.getContext("2d");
+
+        var turtle = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            z: 0,
+            angle: 0,
+            penDown: true,
+            color: "black", 
+            step: 10
+        };
+
+
+        function setColor(color) {
+            turtle.color = color;
+        }
+
+        function setStep(step) {
+            turtle.step = step;
+        }
+
+        function forward(distance, teta, fi) {
+            var newX = turtle.x + distance * Math.cos((turtle.angle+teta) * Math.PI / 180)*Math.cos((turtle.angle+fi) * Math.PI / 180);
+            var newY = turtle.y + distance * Math.cos((turtle.angle+teta) * Math.PI / 180)*Math.sin((turtle.angle+fi) * Math.PI / 180);
+            var newZ = turtle.z + distance * Math.sin((turtle.angle+teta) * Math.PI / 180)
+            
+            if (turtle.penDown) {
+                ctx.strokeStyle = turtle.color;
+                ctx.beginPath();
+                ctx.moveTo(turtle.x, turtle.y);
+                ctx.lineTo(newX, newY);
+                ctx.stroke();
+                
+                
+            }
+
+            turtle.x = newX;
+            turtle.y = newY;
+            turtle.z = newZ;
+        }
+
+        function trójkąt(distance){
+            
+            setColor("red")
+            forward(distance, 0,0);
+            setColor("red");
+            forward(distance,0,90);
+            setColor("red");
+            forward(distance * Math.sqrt(2),180,45);
+            
+        }
+
+
+        function OŚ(distance){
+            turtle.x  = 400;
+            turtle.y = 400;
+            setColor("black")
+            forward(distance, 0,0);
+            turtle.x  = 400;
+            turtle.y = 400;
+            forward(distance, 180,0);
+            turtle.x  = 400;
+            turtle.y = 400;
+            setColor("blue")
+            forward(distance, 0,90);
+            turtle.x  = 400;
+            turtle.y = 400;
+            forward(distance, 0,-90);
+            turtle.x  = 400;
+            turtle.y = 400;
+            setColor("green")   
+                  
+            forward(distance, 90,0);
+            turtle.x  = 400;
+            turtle.y = 400;
+            forward(distance, -90,0);
+            
+        }
+        function kwadrat(distance){
+            turtle.x  = 300;
+            turtle.y = 300;
+            setColor("purple");
+            forward(distance, 0,35);
+            setColor("purple");
+            forward(distance, 90,35);
+            setColor("purple");
+            forward(distance, 180,35);
+            setColor("purple");
+            forward(distance, 270,35);
+        }
+
+       
+        trójkąt(100)
+        OŚ(200)
+        kwadrat(150)
+        
+      
+    </script>
+</body>
+</html>
