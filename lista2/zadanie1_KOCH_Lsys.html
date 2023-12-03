@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOCH</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="lsystem" width="800" height="600"></canvas>
+  <button id="nextStepButton">Next Step</button>
+
+  <script>
+    const canvas = document.getElementById('lsystem');
+    const context = canvas.getContext('2d');
+
+    const axiom = 'F';
+    const rule = {
+      'F': 'F-F+F+F-F'
+    };
+
+    let currentIteration = 0;
+    const angle = 60;
+    const length = 1;
+
+    function applyRule(ch) {
+      return rule[ch] || ch;
+    }
+
+    function generateLSystem(axiom, rule, iterations) {
+        
+        let result = axiom;
+        for (let i = 0; i < iterations; i++) {
+        let newResult = '';
+        for (let j = 0; j < result.length; j++) {
+        const ch = result[j];
+        newResult += rule[ch] !== undefined ? rule[ch] : ch;
+         }
+        result = newResult;
+  }
+  return result;
+}
+
+
+    function drawLSystem(iteration) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      let currentAngle = 0;
+      let currentPosition = { x: 0, y: canvas.height / 2 };
+
+      const lsystemString = generateLSystem(axiom, rule, iteration);
+
+      for (let i = 0; i < lsystemString.length; i++) {
+        const currentChar = lsystemString[i];
+
+        if (currentChar === 'F') {
+          const newX = currentPosition.x + length * Math.cos(currentAngle);
+          const newY = currentPosition.y - length * Math.sin(currentAngle);
+
+          context.beginPath();
+          context.moveTo(currentPosition.x, currentPosition.y);
+          context.lineTo(newX, newY);
+          context.stroke();
+
+          currentPosition = { x: newX, y: newY };
+        } else if (currentChar === '+') {
+          currentAngle += (angle * Math.PI) / 180;
+        } else if (currentChar === '-') {
+          currentAngle -= (angle * Math.PI) / 180;
+        }
+      }
+    }
+
+    function nextStep() {
+      currentIteration++;
+      drawLSystem(currentIteration);
+    }
+
+    drawLSystem(currentIteration);
+
+    document.getElementById('nextStepButton').addEventListener('click', nextStep);
+  </script>
+</body>
+</html>

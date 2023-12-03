@@ -1,0 +1,35 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open zadanie1.html",
+            "file": "/Users/kingateklak/Desktop/grafika/Grafika_233124/lista2/zadanie1_CANTOR_Lsys.html"
+        },{
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open zadanie2.html",
+            "file": "/Users/kingateklak/Desktop/grafika/Grafika_233124/lista2/zadanie2.html"
+        },{
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open zadanie3.html",
+            "file": "/Users/kingateklak/Desktop/grafika/Grafika_233124/lista2/zadanie3.html"
+        },{
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open zadanie4.html",
+            "file": "/Users/kingateklak/Desktop/grafika/Grafika_233124/lista2/zadanie4.html"
+        },{
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open zadanie1_KOCH.html",
+            "file": "/Users/kingateklak/Desktop/grafika/Grafika_233124/lista2/zadanie1_KOCH_Lsys.html"
+        },
+    ]
+}

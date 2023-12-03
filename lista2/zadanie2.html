@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ellipse </title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="ellipseCanvas" width="800" height="500"></canvas>
+    <div id="results"></div> 
+    <script>
+        // Bresenham's algorithm
+        function drawEllipseBresenham(context, centerX, centerY, radiusX, radiusY) {
+            let x = 0;
+            let y = radiusY;
+            let rx2 = radiusX * radiusX;
+            let ry2 = radiusY * radiusY;
+            let twoRx2 = 2 * rx2;
+            let twoRy2 = 2 * ry2;
+            let p;
+            let px = 0;
+            let py = twoRx2 * y;
+
+            // Start points
+            plotEllipsePoints(context, centerX, centerY, x, y);
+
+            // Pół-oś 1
+            p = Math.round(ry2 - (rx2 * radiusY) + (0.25 * rx2));
+            while (px < py) {
+                x++;
+                px += twoRy2;
+                if (p < 0) {
+                    p += ry2 + px;
+                } else {
+                    y--;
+                    py -= twoRx2;
+                    p += ry2 + px - py;
+                }
+                plotEllipsePoints(context, centerX, centerY, x, y);
+            }
+
+            // Pół-oś 2
+            p = Math.round(ry2 * (x + 0.5) * (x + 0.5) + rx2 * (y - 1) * (y - 1) - rx2 * ry2);
+            while (y > 0) {
+                y--;
+                py -= twoRx2;
+                if (p > 0) {
+                    p += rx2 - py;
+                } else {
+                    x++;
+                    px += twoRy2;
+                    p += rx2 - py + px;
+                }
+                plotEllipsePoints(context, centerX, centerY, x, y);
+            }
+
+            // Label 
+            context.fillStyle = "black";
+            context.fillText("Bresenham's Ellipse", centerX - 60, centerY + radiusY + 15);
+        }
+
+        // Naive algorithm using the ellipse equation
+        function drawEllipseNaive(context, centerX, centerY, radiusX, radiusY) {
+            const scaleX = 1 / radiusX;
+            const scaleY = 1 / radiusY;
+
+            // Label
+            context.fillStyle = "black";
+            context.fillText("Naive Ellipse", centerX - 40, centerY - radiusY - 15);
+
+            for (let angle = 0; angle <= 360; angle += 0.01) {
+                const radians = angle * (Math.PI / 180);
+                const x = Math.round(centerX + radiusX * Math.cos(radians));
+                const y = Math.round(centerY + radiusY * Math.sin(radians));
+
+                context.fillRect(x, y, 1, 1);
+            }
+        }
+
+        // Helper function
+        function plotEllipsePoints(context, centerX, centerY, x, y) {
+            context.fillRect(centerX + x, centerY + y, 1, 1);
+            context.fillRect(centerX - x, centerY + y, 1, 1);
+            context.fillRect(centerX + x, centerY - y, 1, 1);
+            context.fillRect(centerX - x, centerY - y, 1, 1);
+        }
+
+        
+        function draw() {
+            const canvas = document.getElementById('ellipseCanvas');
+            const context = canvas.getContext('2d');
+
+            const centerX = canvas.width / 4;
+            const centerY = canvas.height / 2;
+            const radiusX = 100;
+            const radiusY = 50;
+
+            // Bresenham's algorithm
+            const startTimeBresenham = performance.now();
+            drawEllipseBresenham(context, centerX, centerY, radiusX, radiusY);
+            const endTimeBresenham = performance.now();
+            const timeBresenham = endTimeBresenham - startTimeBresenham;
+
+            // Naive algorithm
+            const startTimeNaive = performance.now();
+            drawEllipseNaive(context, centerX * 3, centerY, radiusX, radiusY);
+            const endTimeNaive = performance.now();
+            const timeNaive = endTimeNaive - startTimeNaive
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `<p>Bresenham's Algorithm Time: ${timeBresenham.toFixed(4)} milliseconds</p>`;
+            resultsDiv.innerHTML += `<p>Naive Algorithm Time: ${timeNaive.toFixed(4)} milliseconds</p>`;
+        
+        }
+       
+        window.onload = draw;
+    </script>
+</body>
+</html>
