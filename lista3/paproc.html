@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paproć</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="fernCanvas" width="800" height="600"></canvas>
+
+  <script>
+    const canvas = document.getElementById('fernCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Przekształcenia afiniczne dla paproci Barnsleya
+    // https://pl.wikipedia.org/wiki/Papro%C4%87_Barnsleya
+    const transformations = [
+      {
+        a: 0,
+        b: 0,
+        c: 0,
+        d: 0.16,
+        e: 0,
+        f: 0
+      },
+      {
+        a: 0.85,
+        b: 0.04,
+        c: -0.04,
+        d: 0.85,
+        e: 0,
+        f: 1.6
+      },
+      {
+        a: 0.2,
+        b: -0.26,
+        c: 0.23,
+        d: 0.22,
+        e: 0,
+        f: 1.6
+      },
+      {
+        a: -0.15,
+        b: 0.28,
+        c: 0.26,
+        d: 0.24,
+        e: 0,
+        f: 0.44
+      }
+    ];
+
+
+let x = 0;
+let y = 0;
+
+
+for (let i = 0; i < 5000000; i++) {
+  const randomIndex = Math.floor(Math.random() * transformations.length);
+  const { a, b, c, d, e, f } = transformations[randomIndex];
+
+  const newX = a * x + b * y + e;
+  const newY = c * x + d * y + f;
+
+  x = newX;
+  y = newY;
+
+  //dostosowanie umiejscowienia paproci
+  const pixelX = Math.floor((x + 3) * 60);
+  const pixelY = Math.floor(canvas.height - (y + 1) * 60);
+
+  
+  ctx.fillStyle = '#006400'; 
+  ctx.fillRect(pixelX, pixelY, 1.2, 1.2);
+}
+
+    
+  </script>
+</body>
+</html>

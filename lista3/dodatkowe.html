@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rotating 3D Cubes</title>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <script src="https://threejs.org/build/three.js"></script>
+  <script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    window.addEventListener('resize', () => {
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+
+      camera.aspect = newWidth / newHeight;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(newWidth, newHeight);
+    });
+
+    const cubes = [];
+    const cubeCount = 10;
+
+    for (let i = 0; i < cubeCount; i++) {
+      let  size = 1.5;
+      const geometry = new THREE.BoxGeometry(size, size, size);
+      const material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff,transparent: true, opacity: 0.7});
+      const cube = new THREE.Mesh(geometry, material);
+      cube.position.set(Math.random() * 20 - 10, Math.random() * 20 - 10, Math.random() * 20 - 10);
+      cubes.push(cube);
+      scene.add(cube);
+    }
+
+    camera.position.z = 20;
+
+    const checkCollision = (cube1, cube2) => {
+      const distance = cube1.position.distanceTo(cube2.position);
+      return distance < cube1.geometry.parameters.width + cube2.geometry.parameters.width;
+    };
+
+    const handleCollision = (cube1, cube2) => {
+      const offset = 0.1;
+      cube1.position.x += Math.random() > 0.5 ? offset : -offset;
+      cube1.position.y += Math.random() > 0.5 ? offset : -offset;
+      cube1.position.z += Math.random() > 0.5 ? offset : -offset;
+    };
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+
+      cubes.forEach(cube => {
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.02;
+
+        cubes.forEach(otherCube => {
+          if (cube !== otherCube && checkCollision(cube, otherCube)) {
+            handleCollision(cube, otherCube);
+          }
+        });
+      });
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+  </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraktal Julia Set</title>
+</head>
+<body>
+    <canvas id="cnv" width="500" height="500"></canvas>
+    <br>
+    <label for="initialValues">Wybierz wartości:</label>
+    <select id="initialValues">
+        <option value="0">-0.1, 0.65i</option>
+        <option value="1">-0.73, 0.19i</option>
+        <option value="2">-0.8, 0.156i</option>
+        <option value="3">0.285, 0.01i</option>
+        <option value="4"> 0.35 , 0.35i </option>
+    </select>
+    <br>
+    <button onclick="updateFractal()">Aktualizuj Fraktal</button>
+
+    <script>
+        var canvas = document.getElementById("cnv");
+        var context = canvas.getContext("2d");
+        var zoomFactor = 150;
+        var canvasWidth = canvas.width;
+        var canvasHeight = canvas.height;
+
+        function calculateJuliaSetPoint(x, y, maxIterations, initialX, initialY) {
+            var iteration = 0;
+            var normalizedX = (x - 250) / zoomFactor;
+            var normalizedY = (y - 250) / zoomFactor;
+            var complexX = normalizedX;
+            var complexY = normalizedY;
+
+            while (iteration < maxIterations) {
+                var tempX = complexX * complexX - complexY * complexY + initialX;
+                var tempY = 2 * complexX * complexY + initialY;
+
+                complexX = tempX;
+                complexY = tempY;
+                iteration++;
+
+                if (complexX * complexX + complexY * complexY >= 4) {
+                    return ((iteration / maxIterations) * 100);
+                }
+            }
+
+            return 1;
+        }
+
+        function updateFractal() {
+            var selectElement = document.getElementById("initialValues");
+            var selectedIndex = selectElement.value;
+            var initialValues = [
+                { initialX: -0.1, initialY: 0.65 },
+                { initialX: -0.73, initialY: 0.19 },
+                { initialX: -0.8, initialY: 0.156 },
+                { initialX: 0.285, initialY: 0.01 },
+                { initialX:  0.35 , initialY:  0.35  },
+            ];
+
+            var selectedValues = initialValues[selectedIndex];
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+
+            for (var posY = 0; posY < canvasHeight; posY++) {
+                for (var posX = 0; posX < canvasWidth; posX++) {
+                    var setMembership = calculateJuliaSetPoint(posX, posY, 250, selectedValues.initialX, selectedValues.initialY);
+
+                    if (setMembership == 1) {
+                        context.fillStyle = 'black';
+                        context.fillRect(posX, posY, 1, 1);
+                    } else {
+                        context.fillStyle = 'hsla(250, 100%, ' + setMembership + '%, 0.98)';  
+                        context.fillRect(posX, posY, 1, 1);
+                    }
+                }
+            }
+        }
+
+        
+        updateFractal();
+    </script>
+</body>
+</html>

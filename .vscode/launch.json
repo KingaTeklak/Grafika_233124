@@ -5,6 +5,10 @@
     "version": "0.2.0",
     "configurations": [
 
+
+
+
+
         {
             "type": "chrome",
             "request": "launch",
@@ -30,6 +34,21 @@
             "request": "launch",
             "name": "Open zadanie1_KOCH.html",
             "file": "/Users/kingateklak/Desktop/grafika/Grafika_233124/lista2/zadanie1_KOCH_Lsys.html"
+        },{
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open julia.html",
+            "file": "/Users/kingateklak/Desktop/grafika/Grafika_233124/lista3/julia.html"
+        },{
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open paproc.html",
+            "file": "/Users/kingateklak/Desktop/grafika/Grafika_233124/lista3/paproc.html"
+        },{
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open dodatkowe.html",
+            "file": "/Users/kingateklak/Desktop/grafika/Grafika_233124/lista3/dodatkowe.html"
         },
     ]
 }
